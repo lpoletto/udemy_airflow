@@ -4,7 +4,7 @@ from airflow.sensors.base import PokeReturnValue
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 
-from include.stock_market.tasks import _get_stock_prices
+from include.stock_market.tasks import _get_stock_prices, _store_prices
 
 
 SYMBOL = "MELI"  # Symbol for Mercado Libre, Inc.
@@ -42,6 +42,14 @@ def stock_market():
         }
     )
 
-    is_api_available() >> get_stock_prices
+    store_prices = PythonOperator(
+        task_id="store_prices",
+        python_callable=_store_prices,
+        op_kwargs={
+            "stock": "{{ ti.xcom_pull(task_ids='get_stock_prices') }}"
+        }
+    )
+
+    is_api_available() >> get_stock_prices >> store_prices
 
 stock_market()
