@@ -6,7 +6,8 @@ import random
     start_date=datetime(2024, 1, 1),
     schedule="@daily",
     description='A simple DAG to generate and check random numbers',
-    catchup=False
+    catchup=False,
+    tags=["random_number_checker"]
 )
 def random_number_checker():
 
