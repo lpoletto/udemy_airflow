@@ -18,3 +18,7 @@
    ```
    astro dev restart
    ```
+6. Para finalizar el proyecto si no se utiliza, ejecuta:
+   ```
+   astro dev stop
+   ```
