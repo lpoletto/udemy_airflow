@@ -3,6 +3,7 @@ from airflow.hooks.base import BaseHook
 from airflow.sensors.base import PokeReturnValue
 from airflow.operators.python import PythonOperator
 from airflow.providers.docker.operators.docker import DockerOperator
+from airflow.providers.slack.notifications.slack_notifier import SlackNotifier
 from astro import sql as aql
 from astro.files import File
 from astro.sql.table import Table, Metadata
@@ -17,7 +18,17 @@ SYMBOL = "MELI"  # Symbol for Mercado Libre, Inc.
     start_date=datetime(2023, 1, 1),
     schedule="@daily",
     catchup=False,
-    tags=["stock_market"]
+    tags=["stock_market"],
+    on_success_callback=SlackNotifier(
+        slack_conn_id="slack",
+        text="The DAG stock_market has completed successfully.",
+        channel="demo-airflow-notifications",
+    ),
+    on_failure_callback=SlackNotifier(
+        slack_conn_id="slack",
+        text="The DAG stock_market has failed.",
+        channel="demo-airflow-notifications",
+    )
 )
 
 
@@ -78,6 +89,7 @@ def stock_market():
         }
     )
 
+    # Utilizamos el SDK de Astro para cargar el archivo CSV a PostgreSQL
     load_to_dw = aql.load_file(
         task_id="load_to_dw",
         input_file=File(
