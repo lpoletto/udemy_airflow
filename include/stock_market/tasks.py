@@ -37,24 +37,22 @@ def _store_prices(stock):
     # 1. Connect to MinIO
     client = _get_minio_client()
 
-    # 2. The destination bucket on the MinIO server
-    bucket_name = BUCKET_NAME
-    # 3. Make the bucket if it doesn't exist.
-    found = client.bucket_exists(bucket_name)
+    # 2. Make the bucket if it doesn't exist.
+    found = client.bucket_exists(BUCKET_NAME)
     if not found:
-        client.make_bucket(bucket_name)
-        print("Created bucket", bucket_name)
+        client.make_bucket(BUCKET_NAME)
+        print("Created bucket", BUCKET_NAME)
     else:
-        print("Bucket", bucket_name, "already exists")
+        print("Bucket", BUCKET_NAME, "already exists")
 
-    # 4. Transforma data to Dict
+    # 3. Transforma data to Dict
     stock = json.loads(stock)
     symbol = stock["meta"]["symbol"]
     data = json.dumps(stock, ensure_ascii=False).encode("utf-8")
 
-    # 5. Upload the file, renaming it in the process
+    # 4. Upload the file, renaming it in the process
     objw = client.put_object(
-        bucket_name=bucket_name, 
+        bucket_name=BUCKET_NAME, 
         object_name=f"{symbol}/prices.json",
         data=BytesIO(data),
         length=len(data)
