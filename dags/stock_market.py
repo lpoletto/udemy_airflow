@@ -21,13 +21,13 @@ SYMBOL = "MELI"  # Symbol for Mercado Libre, Inc.
     tags=["stock_market"],
     on_success_callback=SlackNotifier(
         slack_conn_id="slack",
-        text="The DAG stock_market has completed successfully.",
-        channel="demo-airflow-notifications",
+        text="The stock_market DAG has completed successfully.",
+        channel="demo-airflow-notifications"
     ),
     on_failure_callback=SlackNotifier(
         slack_conn_id="slack",
-        text="The DAG stock_market has failed.",
-        channel="demo-airflow-notifications",
+        text="The stock_market DAG has failed.",
+        channel="demo-airflow-notifications"
     )
 )
 
