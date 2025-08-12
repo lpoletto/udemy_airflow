@@ -69,6 +69,38 @@ services:
       - ./include/data/metabase:/metabase-data
     networks:
       - ndsnet
+  
+  mysql:
+    image: mysql:8.0.32
+    container_name: mysql-db
+    restart: always
+    volumes:
+      - mysql_source_data:/var/lib/mysql
+      - ./include/database/f1db.sql:/docker-entrypoint-initdb.d/f1db.sql
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql123
+      MYSQL_DATABASE: f1db
+      MYSQL_USER: f1user
+      MYSQL_PASSWORD: f1password
+    networks:
+      - ndsnet
+  
+  postgres-dw:
+    image: postgres:15
+    container_name: postgres-dw
+    restart: always
+    volumes:
+      - postgres_dw_data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: f1_dw
+    networks:
+      - ndsnet
 
   docker-proxy:
     image: alpine/socat
@@ -83,3 +115,9 @@ services:
 networks:
   ndsnet:
     driver: bridge
+
+volumes:
+  mysql_source_data:
+    driver: local
+  postgres_dw_data:
+    driver: local

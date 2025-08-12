@@ -11,3 +11,5 @@ airflow.cfg
 airflow.db
 /include/data/minio/*
 /include/data/metabase/*
+/include/data/mysql_data/*
+/include/database/*
